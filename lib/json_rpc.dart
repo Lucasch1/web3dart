@@ -22,7 +22,11 @@ abstract class RpcService {
   /// When the request is successful, an [RPCResponse] with the request id and
   /// the data from the server will be returned. If not, an RPCError will be
   /// thrown. Other errors might be thrown if an IO-Error occurs.
-  Future<RPCResponse> call(String function, [List<dynamic>? params]);
+  Future<RPCResponse> call(
+    String function, [
+    List<dynamic>? params,
+    String? feeCurrency,
+  ]);
 }
 
 /// Json RPC Service.
@@ -43,15 +47,23 @@ class JsonRPC extends RpcService {
   /// the data from the server will be returned. If not, an RPCError will be
   /// thrown. Other errors might be thrown if an IO-Error occurs.
   @override
-  Future<RPCResponse> call(String function, [List<dynamic>? params]) async {
+  Future<RPCResponse> call(
+    String function, [
+    List<dynamic>? params,
+    String? feeCurrencie,
+  ]) async {
     params ??= [];
 
     final requestPayload = {
       'jsonrpc': '2.0',
       'method': function,
       'params': params,
+      'feeCurrency': feeCurrencie,
+      'type': '0x7b',
       'id': _currentRequestId++,
     };
+
+    print(requestPayload);
 
     final response = await client.post(
       Uri.parse(url),

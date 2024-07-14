@@ -48,9 +48,13 @@ class Web3Client {
   ///Whether errors, handled or not, should be printed to the console.
   bool printErrors = false;
 
-  Future<T> makeRPCCall<T>(String function, [List<dynamic>? params]) async {
+  Future<T> makeRPCCall<T>(
+    String function, [
+    List<dynamic>? params,
+    String? feeCurrencie,
+  ]) async {
     try {
-      final data = await _jsonRpc.call(function, params);
+      final data = await _jsonRpc.call(function, params, feeCurrencie);
       // ignore: only_throw_errors
       if (data is Error || data is Exception) throw data;
 
@@ -326,6 +330,7 @@ class Web3Client {
     Credentials cred,
     Transaction transaction, {
     int? chainId = 1,
+    String? feeCurrency,
     bool fetchChainIdFromNetworkId = false,
   }) async {
     if (cred is CustomTransactionSender) {
@@ -343,7 +348,7 @@ class Web3Client {
       signed = prependTransactionType(0x02, signed);
     }
 
-    return sendRawTransaction(signed);
+    return sendRawTransaction(signed, feeCurrency);
   }
 
   /// Sends a raw, signed transaction.
@@ -353,10 +358,17 @@ class Web3Client {
   /// Returns a hash of the transaction which, after the transaction has been
   /// included in a mined block, can be used to obtain detailed information
   /// about the transaction.
-  Future<String> sendRawTransaction(Uint8List signedTransaction) async {
-    return makeRPCCall('eth_sendRawTransaction', [
-      bytesToHex(signedTransaction, include0x: true, padToEvenLength: true),
-    ]);
+  Future<String> sendRawTransaction(
+    Uint8List signedTransaction,
+    String? feeCurrency,
+  ) async {
+    return makeRPCCall(
+      'eth_sendRawTransaction',
+      [
+        bytesToHex(signedTransaction, include0x: true, padToEvenLength: true),
+      ],
+      feeCurrency,
+    );
   }
 
   /// Signs the [transaction] with the credentials [cred]. The transaction will
