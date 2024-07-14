@@ -11,6 +11,7 @@ class Transaction {
     this.nonce,
     this.maxFeePerGas,
     this.maxPriorityFeePerGas,
+    this.feeCurrency,
   });
 
   /// Constructs a transaction that can be used to call a contract function.
@@ -25,6 +26,7 @@ class Transaction {
     this.nonce,
     this.maxFeePerGas,
     this.maxPriorityFeePerGas,
+    this.feeCurrency,
   })  : to = contract.address,
         data = function.encodeCall(parameters);
 
@@ -69,6 +71,7 @@ class Transaction {
 
   final EtherAmount? maxPriorityFeePerGas;
   final EtherAmount? maxFeePerGas;
+  final String? feeCurrency;
 
   Transaction copyWith({
     EthereumAddress? from,
@@ -80,6 +83,7 @@ class Transaction {
     int? nonce,
     EtherAmount? maxPriorityFeePerGas,
     EtherAmount? maxFeePerGas,
+    String? feeCurrency,
   }) {
     return Transaction(
       from: from ?? this.from,
@@ -91,6 +95,7 @@ class Transaction {
       nonce: nonce ?? this.nonce,
       maxFeePerGas: maxFeePerGas ?? this.maxFeePerGas,
       maxPriorityFeePerGas: maxPriorityFeePerGas ?? this.maxPriorityFeePerGas,
+      feeCurrency: feeCurrency ?? this.feeCurrency,
     );
   }
 
